@@ -1,0 +1,10 @@
+# Experimental Design
+
+!INCLUDE "goals.md"
+!INCLUDE "design.md"
+!INCLUDE "subjects.md"
+!INCLUDE "objects.md"
+!INCLUDE "instrumentation.md"
+!INCLUDE "data_collect_proc.md"
+!INCLUDE "analysis_proc.md"
+!INCLUDE "eval_validity.md"

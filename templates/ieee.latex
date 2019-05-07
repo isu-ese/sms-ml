@@ -1,0 +1,67 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+% \usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{epstopdf}
+
+$if(graphics)$
+\usepackage{graphicx}
+% Redefine \includegraphics so that, unless explicit options are
+% given, the image width will not exceed the width of the page.
+% Images get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the margins.
+\makeatletter
+\def\ScaleIfNeeded{%
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{\Oldincludegraphics[width=\ScaleIfNeeded]{#2}}
+$endif$
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document}
+
+\title{$title$}
+
+\author{%
+$for(affiliations)$
+\IEEEauthorblockN{$affiliations.authors$}
+\IEEEauthorblockA{$if(affiliations.lab)$$affiliations.lab$\\$endif$
+$if(affiliations.deptartment$$affiliations.department$\\$endif$
+$if(affiliations.institute$$affiliations.institute$\\$endif$
+$if(affiliations.city)$$affiliations.city$, $endif$$if(affiliations.state)$$affiliations.state$, $endif$$if(affiliations.postcode)$$affiliations.postcode$$endif$\\
+$if(affiliations.email)$Email: \{$affiliations.email$\}}$endif$
+$endfor$
+}
+
+\maketitle
+
+\begin{abstract}
+$abstract$
+\end{abstract}
+
+\begin{IEEEkeywords}
+$keywords$
+\end{IEEEkeywords}
+
+$body$
+
+\bibliographystyle{IEEEtran}
+\bibliography{referneces}
+
+\end{document}

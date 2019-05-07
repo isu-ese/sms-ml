@@ -1,0 +1,14 @@
+!INCLUDE "metadata.yml"
+
+!INCLUDE "abstract.md"
+!INCLUDE "introduction/introduction.mdpp"
+!INCLUDE "background/background.mdpp"
+!INCLUDE "methods/methods.mdpp"
+!INCLUDE "conclusion/conclusion_proposal.mdpp"
+!INCLUDE "acknowledgements.md"
+
+\printbibliography
+
+\appendix
+
+!INCLUDE "appendices.md"

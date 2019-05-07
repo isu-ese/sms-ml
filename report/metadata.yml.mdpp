@@ -1,0 +1,35 @@
+---
+title:
+title-running:
+authors-running:
+affiliations: [{
+  authors: "",
+  city: "",
+  state: "",
+  country: "",
+  postcode: ""
+}]
+acm-doi:
+  copyrightyear: 2018
+  acmYear: 2018
+  setcopyright: acmlicensed
+  acmConference:
+    shortTitle: "Woodstock '18"
+    longTitle: "Woodstock '18: ACM Symposium on Neural Gaze Detection"
+    date: "June 03--05, 2018"
+    place: "Woodstock, NY"
+  acmBooktitle: Woodstock '18: ACM Symposium on Neural Gaze Detection, June 03--05, 2018, Woodstock, NY
+  acmPrice: 15.00
+  acmDOI: 10.1145/1122445.1122456
+  acmISBN: 978-1-4503-9999-9/18/06
+submission_id:
+abstract: |
+!INCLUDE "abstract.md"
+acks: |
+!INCLUDE "acknowledgments.md"
+keywords:
+ccsxml: |
+  ```{=latex}
+!INCLUDE "ccsxml.md"
+  ```
+...
