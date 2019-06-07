@@ -1,0 +1,404 @@
+\RequirePackage[T1]{fontenc}
+\documentclass[conference,compsoc]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+% \usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{setspace}
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document}
+
+\title{Towards the Automated Generation of Island Grammars}
+
+\author{%
+\IEEEauthorblockN{Rosetta Roberts and Isaac Griffith}
+\IEEEauthorblockA{
+  Informatics and Computer Science\\
+  Idaho State University\\
+  Pocatello, Idaho, 83208\\
+  Email: \{robepea2@isu.edu, grifisaa@isu.edu\}}
+  }
+
+\maketitle
+
+\begin{abstract}
+\textbf{Background}: Since the introduction of island grammars, they've
+been successfully used for a variety of tasks. This includes impact
+analysis, multilingual parsing, source code identification, and other
+tasks. However, there has been no attempt to automate the generation of
+island grammars.
+
+\textbf{Objective}: In this paper, we presented a tool to automate the
+generation of island grammars. It functions by receiving as input
+grammars from different programming languages. It then outputs and
+island grammars for each input grammar that describes structure and
+content not described by other input grammars. We perform this by
+converting the input grammars into equivalent graph structures,
+identifying maximum common subgraphs between the input grammars,
+removing these subgraphs from the input graphs, and then converting the
+remains into grammars.
+
+\textbf{Methods}: What is the statistical context and methods applied?
+
+\textbf{Results}: What are the main findings? Practical implications?
+
+\textbf{Limitations}: What are the weaknesses of this research?
+
+\textbf{Conclusions}: What is the conclusion?
+\end{abstract}
+
+\begin{IEEEkeywords}
+
+\end{IEEEkeywords}
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Code analysis tools are an essential part of modern coding. Using them,
+software engineers find bugs, identify security flaws, increase future
+maintainability, and comply with business rules and regulations. Modern
+development workflows use code analysis tools to provide coding
+assistance, thereby increasing productivity. Software build processes
+integrate them into their pipelines for quality assurance and other
+services. Improvements in the technologies that these tools use allow
+them to solve more problems.
+
+\hypertarget{problem-statement}{%
+\subsection{Problem Statement}\label{problem-statement}}
+
+Codebases in modern work environments are becoming increasingly
+multilingual. For example, a stack for a modern web application might
+use 5 different languages from the start (e.g.~SQL, Java, TypeScript,
+HTML, CSS). Multilingual codebases challenge existing code analysis
+tools. Especially of note is the difficulty of building static analysis
+tools that work across multiple programming languages 1. Current
+approaches focus on handwriting a grammar for each language that a tool
+wants to support. Our goal is to find and evaluate a way to automate
+this process.
+
+\hypertarget{research-objectives}{%
+\subsection{Research Objectives}\label{research-objectives}}
+
+Many code analysis tools transform source code into alternative forms
+that are easier to process before performing their analysis. One of
+these forms is an abstract syntax tree. The abstract syntax tree of code
+preserves the meaning and structure of the code, while removing details
+that are usually unimportant, such as spaces. The abstract syntax tree
+produced for code is specific to the grammar used. The focus of this
+research is to develop an automated method to combine grammars into an
+island grammar. This island grammar should describe similar constructs
+in the original grammars the same so that tools designed to work on this
+grammar will function for any programming language in the initial
+grammars. We anticipate that this will allow tool designers to easily
+support multiple programming languages in a much more maintainable way.
+This is especially relevant as many codebases are becoming multilingual.
+There is currently extremely little research on the development of
+multilingual parsers, which has made static analysis of these
+multilingual codebases difficult 1.
+
+\hypertarget{context}{%
+\subsection{Context}\label{context}}
+
+Code analysis tools are an essential part of modern coding. Using them,
+software engineers find bugs, identify security flaws, increase future
+maintainability, and comply with business rules and regulations. Modern
+development workflows use code analysis tools to provide coding
+assistance, thereby increasing productivity. Software build processes
+integrate them into their pipelines for quality assurance and other
+services. Improvements in the technologies that these tools use allow
+them to solve more problems.
+
+\hypertarget{organization}{%
+\subsection{Organization}\label{organization}}
+
+\hypertarget{background-and-related-work}{%
+\section{Background and Related
+Work}\label{background-and-related-work}}
+
+\hypertarget{context-free-grammars}{%
+\subsection{Context Free Grammars}\label{context-free-grammars}}
+
+A context free grammar can be described as \(G = (V,\Sigma{},P,S)\)
+{[}2{]}. \(V\) is the set of non-terminal symbols. \(\Sigma\) is the set
+of terminal symbols. \(P \subseteq V \times (V\cup\Sigma)^*\) is the set
+of productions describing how the symbols of \(V\) can be substituted
+for other symbols. These productions are written as \(a \rightarrow b\)
+with \(a \in V\) and \(b \in (V\cup\Sigma)^*\). When \(b\) is empty, the
+production is denoted by \(a \rightarrow \varepsilon\). \(S \in V\) is
+the starting symbol. A valid string is represented by a grammar if it
+can created by repeatedly applying productions {[}3{]}. \(L(G)\) is used
+to denote the set of all valid sentences, or language, of grammar \(G\).
+
+\hypertarget{abstract-syntax-trees}{%
+\subsection{Abstract Syntax Trees}\label{abstract-syntax-trees}}
+
+An abstract syntax tree is an ordered tree describing the symbols and
+productions of a grammar that are applied for a given sentence in the
+grammar. An ordered tree is a tree for which the children of each node
+are numbered. Given a grammar \(G = (V,\Sigma,P,S)\), the leaf nodes of
+a tree must be elements from \(\Sigma\cup\{\varepsilon\}\)
+(\(\varepsilon\) represents the empty string). The concatenation from
+left to right of the leaf nodes should equal the sentence for which the
+parse tree is for. Each internal node must be a member of \(V\). For
+each internal node \(v\) with children \(c_1, c_2,...\), the production
+\(v \rightarrow c_1c_2...\) must be a member of \(P\). The root node of
+the tree must be \(S\). {[}4{]}
+
+\hypertarget{island-grammars}{%
+\subsection{Island Grammars}\label{island-grammars}}
+
+Island grammars are specialized grammars designed to match certain
+constructs of interest, called islands {[}3{]}. They are also designed
+to blindly match surrounding content that is not of interest as water.
+They offer several advantages over regular grammars for many
+applications including faster development time, lower complexity, and
+better error tolerance. Island grammars have been used for many
+applications including documentation extraction and processing {[}5{]},
+impact analysis {[}6{]}, and extracting code embedded in natural
+language documents {[}7{]} {[}8{]}. Of particular interest to our
+research is their use for creating multilingual parsers {[}9{]}, which
+inspired this research, and the development of tolerant grammars
+{[}10{]} {[}11{]} {[}12{]}.
+
+\hypertarget{tolerant-grammars}{%
+\subsection{Tolerant Grammars}\label{tolerant-grammars}}
+
+Tolerant grammars were initially designed as a way of making island
+grammars more robust. To do this, Klusener and Lammel 10 first
+identified possible problems with island grammars. False positives are
+content identified by the island grammar as islands even though they are
+not constructs of interest. False negatives are constructs of interest
+that the island grammar fails to recognize as islands. To minimize the
+number of false positives and false negatives, 10 came up with the idea
+to share productions between the island grammar and the full grammar
+it's related to. The grammars created in this process minimize false
+negatives and false positives. The shared portions between the island
+grammar and the full grammar must start at their start nodes and extend
+to a certain depth.
+
+\hypertarget{maximum-common-subgraph-mcs}{%
+\subsection{Maximum Common Subgraph
+(MCS)}\label{maximum-common-subgraph-mcs}}
+
+The maximum common subgraph problem is the problem where you try to find
+maximal isomorphic subgraphs in two labeled graphs. It's commonly used
+in bioinformatics for finding similarities between chemical structures
+{[}13{]}. This problem is usually broken down into different variations
+depending on the connectedness of the subgraph, the maximality measure
+used, and whether approximate or exact solutions are desired. These
+variations can usually be converted between one another with little work
+(with exception between approximate and exact variations). For our
+research, we depend on the connected maximum common induced subgraph
+variation (connected MCIS). An induced subgraph \(S\) of a graph \(J\)
+has an edge between two vertices if and only if \(J\) has the same edge
+between the same two vertices. In connected MCIS, the subgraphs found
+must be connected and must be induced. The maximality measure used is
+the number of vertices in the isomorphic subgraphs.
+
+The maximum common subgraph problem is an NP-Complete problem 14.
+Because of the difficulty of the problem, several algorithms have been
+designed for solving the different variations. The algorithms for exact
+solutions tend to fall into two different kinds of algorithms. The first
+kind are clique-based algorithms that depend on reducing the MCS problem
+to the maximal-clique (MC) problem. This is done by calculating the
+modular product between two graphs. The second kind of algorithms used
+are backtracking algorithms. These algorithms function by modeling
+possible solutions with a search tree and then pruning away
+non-promising solutions.
+
+For more than two graphs, this problem reduces to the maximal frequent
+subgraph problem. While these problems might seem quite similar, the
+algorithms for solving them are quite different.
+
+\hypertarget{experimental-design}{%
+\section{Experimental Design}\label{experimental-design}}
+
+\hypertarget{goals-hypotheses-and-variables}{%
+\subsection{Goals, Hypotheses and
+Variables}\label{goals-hypotheses-and-variables}}
+
+We hypothesize that our method for creating multilingual grammars has
+the following properties:
+
+\begin{itemize}
+\tightlist
+\item
+  The grammar should accept exactly the sentences that are valid in any
+  of the languages used to build the grammar.
+  \(s \in L(G_1)\cup L(G_2) \leftrightarrow s \in L(G_{12})\).
+\end{itemize}
+
+\hypertarget{experimental-design-1}{%
+\subsection{Experimental Design}\label{experimental-design-1}}
+
+\hypertarget{experimental-subjects}{%
+\subsection{Experimental Subjects}\label{experimental-subjects}}
+
+\hypertarget{experimental-objects}{%
+\subsection{Experimental Objects}\label{experimental-objects}}
+
+\hypertarget{instrumentation}{%
+\subsection{Instrumentation}\label{instrumentation}}
+
+\hypertarget{data-collection-procedures}{%
+\subsection{Data Collection
+Procedures}\label{data-collection-procedures}}
+
+\hypertarget{analysis-procedures}{%
+\subsection{Analysis Procedures}\label{analysis-procedures}}
+
+\hypertarget{evaluation-of-validity}{%
+\subsection{Evaluation of Validity}\label{evaluation-of-validity}}
+
+\hypertarget{execution}{%
+\section{Execution}\label{execution}}
+
+\hypertarget{sample}{%
+\subsection{Sample}\label{sample}}
+
+\hypertarget{preparation}{%
+\subsection{Preparation}\label{preparation}}
+
+\hypertarget{data-collection-performed}{%
+\subsection{Data Collection Performed}\label{data-collection-performed}}
+
+\hypertarget{validity-procedures}{%
+\subsection{Validity Procedures}\label{validity-procedures}}
+
+\hypertarget{analysis}{%
+\section{Analysis}\label{analysis}}
+
+\hypertarget{descriptive-statistics}{%
+\subsection{Descriptive Statistics}\label{descriptive-statistics}}
+
+\hypertarget{data-set-reduction}{%
+\subsection{Data Set Reduction}\label{data-set-reduction}}
+
+\hypertarget{hypothesis-testing}{%
+\subsection{Hypothesis Testing}\label{hypothesis-testing}}
+
+\hypertarget{interpretation}{%
+\section{Interpretation}\label{interpretation}}
+
+\hypertarget{evaluation-of-results}{%
+\subsection{Evaluation of Results}\label{evaluation-of-results}}
+
+\hypertarget{limitations-of-study}{%
+\subsection{Limitations of Study}\label{limitations-of-study}}
+
+\hypertarget{inferences}{%
+\subsection{Inferences}\label{inferences}}
+
+\hypertarget{lessons-learned}{%
+\subsection{Lessons Learned}\label{lessons-learned}}
+
+\hypertarget{conclusions-and-future-work}{%
+\section{Conclusions and Future
+Work}\label{conclusions-and-future-work}}
+
+\hypertarget{summary-of-findings}{%
+\subsection{Summary of Findings}\label{summary-of-findings}}
+
+\hypertarget{relation-to-existing-evidence}{%
+\subsection{Relation to Existing
+Evidence}\label{relation-to-existing-evidence}}
+
+\hypertarget{impact}{%
+\subsection{Impact}\label{impact}}
+
+\hypertarget{limitations}{%
+\subsection{Limitations}\label{limitations}}
+
+\hypertarget{future-work}{%
+\subsection{Future Work}\label{future-work}}
+
+\appendix
+
+\hypertarget{appendices}{%
+\section*{Appendices}\label{appendices}}
+\addcontentsline{toc}{section}{Appendices}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-mushtaqMultilingualSourceCode2017}{}%
+{[}1{]} Z. Mushtaq, G. Rasool, and B. Shehzad, ``Multilingual Source
+Code Analysis: A Systematic Literature Review,'' \emph{IEEE Access},
+vol. 5, pp. 11307--11336, 2017.
+
+\leavevmode\hypertarget{ref-haoxiangLanguagesMachinesIntroduction1988}{}%
+{[}2{]} M. Haoxiang, \emph{Languages and Machines An Introduction to the
+Theory of Computer Science}, 3rd ed. Boston, MA, USA: Addison-Wesley
+Longman Publishing Co. Inc., 1988.
+
+\leavevmode\hypertarget{ref-moonenGeneratingRobustParsers2001}{}%
+{[}3{]} L. Moonen, ``Generating robust parsers using island grammars,''
+in \emph{Proceedings Eighth Working Conference on Reverse Engineering},
+2001, pp. 13--22.
+
+\leavevmode\hypertarget{ref-reinhardwilhelmCompilerDesign1995}{}%
+{[}4{]} D. M. Reinhard Wilhelm, \emph{Compiler Design}. Boston, United
+States: Addison-Wesley, 1995.
+
+\leavevmode\hypertarget{ref-deursenBuildingDocumentationGenerators1999}{}%
+{[}5{]} A. V. Deursen and T. Kuipers, ``Building documentation
+generators,'' in \emph{Proceedings IEEE International Conference on
+Software Maintenance - 1999 (ICSM'99). ``Software Maintenance for
+Business Change'' (Cat. No.99CB36360)}, 1999, pp. 40--49.
+
+\leavevmode\hypertarget{ref-moonenLightweightImpactAnalysis2002}{}%
+{[}6{]} L. Moonen, ``Lightweight Impact Analysis using Island
+Grammars.'' in \emph{IWPC}, 2002, pp. 219--228.
+
+\leavevmode\hypertarget{ref-bettenburgWhatMakesGood2008}{}%
+{[}7{]} N. Bettenburg, S. Just, A. Schröter, C. Weiss, R. Premraj, and
+T. Zimmermann, ``What makes a good bug report?'' in \emph{Proceedings of
+the 16th ACM SIGSOFT International Symposium on Foundations of software
+engineering}, 2008, pp. 308--318.
+
+\leavevmode\hypertarget{ref-bacchelliExtractingStructuredData2011}{}%
+{[}8{]} A. Bacchelli, A. Cleve, M. Lanza, and A. Mocci, ``Extracting
+structured data from natural language documents with island parsing,''
+in \emph{Automated Software Engineering (ASE), 2011 26th IEEE/ACM
+International Conference on}, 2011, pp. 476--479.
+
+\leavevmode\hypertarget{ref-synytskyyRobustMultilingualParsing2003}{}%
+{[}9{]} N. Synytskyy, J. R. Cordy, and T. R. Dean, ``Robust multilingual
+parsing using island grammars,'' in \emph{Proceedings of the 2003
+conference of the Centre for Advanced Studies on Collaborative
+research}, 2003, pp. 266--278.
+
+\leavevmode\hypertarget{ref-klusenerDerivingTolerantGrammars2003}{}%
+{[}10{]} S. Klusener and R. Lammel, ``Deriving tolerant grammars from a
+base-line grammar,'' in \emph{Software Maintenance, 2003. ICSM 2003.
+Proceedings. International Conference on}, 2003, pp. 179--188.
+
+\leavevmode\hypertarget{ref-goloveshkinTolerantParsingSpecial2018}{}%
+{[}11{]} A. V. Goloveshkin and S. S. Mikhalkovich, ``Tolerant parsing
+with a special kind of «Any» symbol: the algorithm and practical
+application,'' \emph{Proceedings of the Institute for System Programming
+of the RAS}, vol. 30, no. 4, pp. 7--28, 2018.
+
+\leavevmode\hypertarget{ref-kursBoundedSeas2015}{}%
+{[}12{]} J. Kurš, M. Lungu, R. Iyadurai, and O. Nierstrasz, ``Bounded
+seas,'' \emph{Computer languages, systems \& structures}, vol. 44, pp.
+114--140, 2015.
+
+\leavevmode\hypertarget{ref-raymondMaximumCommonSubgraph}{}%
+{[}13{]} J. W. Raymond and P. Willett, ``Maximum common subgraph
+isomorphism algorithms for the matching of chemical structures,'' p. 13.
+
+\leavevmode\hypertarget{ref-gareyComputersIntractabilityGuide1979}{}%
+{[}14{]} M. R. Garey and D. S. Johnson, \emph{Computers and
+intractability : a guide to the theory of NP-completeness}. W.H.
+Freeman, 1979.
+
+\end{document}
