@@ -1,3 +1,22 @@
 ## Problem Statement
 
-Codebases in modern work environments are becoming increasingly multilingual. For example, a stack for a modern web application might use 5 different languages from the start (e.g. SQL, Java, TypeScript, HTML, CSS). Multilingual codebases challenge existing code analysis tools. Especially of note is the difficulty of building static analysis tools that work across multiple programming languages @mushtaqMultilingualSourceCode2017. Current approaches focus on handwriting a grammar for each language that a tool wants to support. Our goal is to find and evaluate a way to automate this process.
+The overarching goal of this research (which was developed following the Goal-Question-Metric method) is as follows:
+
+!rg{
+\item Analyze Systematic Mapping Studies for the purpose of Evaluation with respect to their Reproducibility and .. from the point of view of the Researcher in the context of Software Engineering Literature.
+}
+
+This goal is further deconstructed into the following set of research questions:
+
+!rq{
+\item Is there a commonality across SMS(s) in their Inclusion/Exclusion criteria?
+      \textbf{Rationale:}
+\item Is there a commonality across SMS(s) in their Quality Criteria?
+      \textbf{Rationale:}
+\item Is there a commonality across SMS(s) in their use of search indexes?
+      \textbf{Rationale:}
+\item Is there a commonality across SMS(s) in their classification of study types?
+      \textbf{Rationale:}
+\item Is there a commonality across SMS(s) in their classification of knowledge artefacts?
+      \textbf{Rationale:}
+}
