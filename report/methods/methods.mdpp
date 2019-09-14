@@ -1,2 +1,15 @@
+We are making the claim the a serious gap in abiilty to vastly improve the process underlying meta-study execution is that there is
+no datasets by which we can apply and improve automation techniques against.
+
+We must identify each phase of the SMS/SLR execution process (and their commonalities) -- See if someone has already constructed a
+process model/diagram which shows the key differences in three approaches (SMS, SLR, Tertiary)
+
+What do we need to do?:
+
+* Need to go out to the literature and find the following items (since the original Kitcham paper)
+  - Proposed Automation techniques and what they evaluated?
+  - Techniques mentioned by technique idenfied in previous bullet? (answer same question as that bullet)
+
+
 !INCLUDE "design/design.mdpp"
 !INCLUDE "execution/execution.mdpp"
