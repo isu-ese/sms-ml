@@ -1,5 +1,23 @@
 # Introduction
 
+In the field of Empirical Software Engineering the use of Meta-Studies has steadily increased since Kitchenham et al. published their
+seminal work on Systematic Literature Reviews [X] and Systematic Mapping Studies [X]. This has grown so much so, that tertiary studies
+have also become a normal form of research in the field. The usefulness of these studies is the ability to concisely synthesize the
+results of research findings which aims to satisfy the underlying goal of empirical software engineering: To provide a sound scientific
+and theoretical underpinning to Software Engineering itself. Yet, though Kitchenham et al. [X], Petersen et al. [X], and Wohlin [X] have
+provide guidance in development and execution of these studies...
+
+Currently, the execution of a meta-study is a very time-consuming process wrought with pitfalls leading to studies which are difficult
+to reproduce or even evaluate the quality thereof. Several researchers have worked to overcome these issues through the development of
+data management and process management tools [X]. Additionally, several approaches to automate different aspects of the execution of a
+meta-study have been proposed, but not yet validate [X]. The key hinderance in the validation of the automation techniques is the same
+as for any machine-learning or artificial intelligence based approach, a lack of available data.
+
+In addition to the time-consuming nature of these studies, is a lack of knowledge encapsulation which would ensure replicable and evolvable
+studies. Thus, beyond the need to automate several key time-consuming phases of the meta-study process is the need to determine 
+if the data supporting these key phases itself has some exploitable stucture within the known general stucture of the process itself.
+Essentially, we are asking are there any patterns or idioms applicable within the context of the meta-study domain?
+
 !INCLUDE "problem_statement.md"
 !INCLUDE "research_objectives.md"
 !INCLUDE "context.md"
