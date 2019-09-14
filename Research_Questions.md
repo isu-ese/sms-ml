@@ -12,6 +12,11 @@ An overview of reasons to do the benchmark study.
   Classification scheme and keywording is the hardest part of SMS. So is the time consuming search. Also, optimal search string (Auto paper)
 
   How can other people use this? Not just for our tool, but what instances would others need this curated data? (Even just parts of the database)
+
+## GQM
+
+RG: Analyze Systematic Mapping Studies for the purpose of Evaluation with respect to their Reproducibility and ... from the point of view of the Researcher in the context of Software Engineering Literature.
+  
 ## Research questions
 
   * (IC/EC) What are the trends in IC/EC for SMS's?
